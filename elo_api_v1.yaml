@@ -1,0 +1,203 @@
+swagger: "2.0"
+info:
+  description: "Simple ELO"
+  version: "1.0.0"
+  title: "Elo Service"
+paths:
+  /match:
+    post:
+      tags:
+      - "match"
+      summary: "Add a new match to the ranking."
+      description: ""
+      operationId: "addMatch"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Match to be added."
+        required: true
+        schema:
+          $ref: "#/definitions/AddMatch"
+      responses:
+        "400":
+          description: "Invalid input."
+        "409":
+          description: "Match with that match_id already exists."
+    delete:
+      tags:
+      - "match"
+      summary: "Remove match from the team ranking list."
+      description: ""
+      operationId: "deleteMatch"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Match id of match to be removed."
+        required: true
+        schema:
+          $ref: "#/definitions/MatchId"
+      responses:
+        "200":
+          description: "Success"
+  /match/{match_id}:
+    get:
+      summary: "Get a match."
+      operationId: "getMatchById"
+      tags:
+        - match
+      parameters:
+        - name: match_id
+          in: path
+          required: true
+          description: The id of the match to retrieve
+          type: integer
+      responses:
+        "200":
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Match'
+  /elo:
+    get:
+      tags:
+      - "elo"
+      summary: "Generates the ELO of a team up point in time."
+      description: ""
+      operationId: "getELO"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The team and point in time."
+        required: true
+        schema:
+          $ref: "#/definitions/GetElo"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: '#/definitions/Elo'
+  /probability:
+    get:
+      tags:
+      - "probability"
+      summary: "The probability of each a two teams if they play at a given point in time."
+      description: ""
+      operationId: "getProbability"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The teams and point in time."
+        required: true
+        schema:
+          $ref: "#/definitions/GetProbability"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: '#/definitions/Probability'
+definitions:
+  Match:
+    type: "object"
+    properties:
+      match_id:
+        type: "integer"
+        format: "int64"
+      match_datetime:
+        type: "string"
+        format: "date-time"
+      winning_team:
+        type: "integer"
+        format: "int64"
+      losing_team:
+        type: "integer"
+        format: "int64"
+      winner_change:
+        type: "number"
+        format: "float64"
+      loser_change:
+        type: "number"
+        format: "float64"
+  AddMatch:
+    type: "object"
+    properties:
+      match_id:
+        type: "integer"
+        format: "int64"
+      match_datetime:
+        type: "string"
+        format: "date-time"
+      winning_team:
+        type: "integer"
+        format: "int64"
+      losing_team:
+        type: "integer"
+        format: "int64"
+      update_elo:
+        type: "boolean"
+        default: false
+  MatchId:
+    type: "object"
+    properties:
+      match_id:
+        type: "integer"
+        format: "int64"
+  GetElo:
+    type: "object"
+    properties:
+      team_id:
+        type: "integer"
+        format: "int64"
+      datetime:
+        type: "string"
+        format: "date-time"
+  Elo:
+    type: "object"
+    properties:
+      team_id:
+        type: "integer"
+        format: "int64"
+      datetime:
+        type: "string"
+        format: "date-time"
+      elo:
+        type: "number"
+        format: "float64"
+  GetProbability:
+    type: "object"
+    properties:
+      team_a:
+        type: "integer"
+        format: "int64"
+      team_b:
+        type: "integer"
+        format: "int64"
+      datetime:
+        type: "string"
+        format: "date-time"
+  Probability:
+    type: "object"
+    properties:
+      team_a:
+        type: "number"
+        format: "float64"
+      team_b:
+        type: "number"
+        format: "float64"
+      datetime:
+        type: "string"
+        format: "date-time"

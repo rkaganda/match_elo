@@ -1,0 +1,6 @@
+---
+log_path: 'log/elo.log'
+log_level: 'DEBUG'
+
+# sqlalchemy_engine_url
+db_url: 'sqlite:///elo.db'
