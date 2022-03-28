@@ -25,11 +25,11 @@ def get_elo(team_id: int, match_datetime: datetime) -> float:
         #     select(func.sum(Match.loser_change).label('elo')).where(
         #         and_(Match.losing_team == team_id, Match.match_datetime <= match_datetime))
         # ).alias()
-        w = select(func.sum(Match.winner_change).label('elo')).where(
+        wins_sum = select(func.sum(Match.winner_change).label('elo')).where(
             and_(Match.winning_team == team_id, Match.match_datetime <= match_datetime))
-        l = select(func.sum(Match.loser_change).label('elo')).where(
+        loss_sum = select(func.sum(Match.loser_change).label('elo')).where(
                 and_(Match.losing_team == team_id, Match.match_datetime <= match_datetime))
-        q = union(w, l).subquery()
+        q = union(wins_sum, loss_sum).subquery()
         elo = session.query(q).first().elo
         if elo is None:
             elo = base_elo

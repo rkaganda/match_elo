@@ -4,3 +4,4 @@ log_level: 'DEBUG'
 
 # sqlalchemy_engine_url
 db_url: 'sqlite:///elo.db'
+db_prefix: 'elo_'
